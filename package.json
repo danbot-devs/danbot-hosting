@@ -1,0 +1,27 @@
+{
+  "name": "danbot-hosting",
+  "version": "0.0.4",
+  "description": "offical api wrapper for dan bot hosting",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danbot-devs/danbot-hosting.git"
+  },
+  "keywords": [
+    "api",
+    "danbot-hosting"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danbot-devs/danbot-hosting/issues"
+  },
+  "homepage": "https://github.com/danbot-devs/danbot-hosting#readme",
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "node-fetch": "^2.6.0"
+  }
+}

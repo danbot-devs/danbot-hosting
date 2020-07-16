@@ -1,6 +1,6 @@
 {
   "name": "danbot-hosting",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "offical api wrapper for dan bot hosting",
   "main": "src/index.js",
   "scripts": {
@@ -14,14 +14,16 @@
     "api",
     "danbot-hosting"
   ],
-  "author": "",
+  "author": "tea cup",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/danbot-devs/danbot-hosting/issues"
   },
   "homepage": "https://github.com/danbot-devs/danbot-hosting#readme",
   "dependencies": {
-    "discord.js": "^12.2.0",
     "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "discord.js": "^12.2.0"
   }
 }

@@ -21,9 +21,9 @@ const Discord = require("discord.js");
 let client = new Discord.Client();
 
 var DanBotHosting = require("danbot-hosting");
-const API = new DanBotHosting.Client("danbot-KEY", client);
 
 client.on("ready", async () => {
+const API = new DanBotHosting.Client("danbot-KEY", client);
   console.log("bot is now ready");
 
   // Start posting

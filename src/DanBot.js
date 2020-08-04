@@ -27,8 +27,8 @@ class DanBot {
       );
     // Client error handling
     if (!client) throw new Error('"client" is missing or undefined');
-    if (!(client instanceof this.discord.Client))
-      throw new TypeError('"client" is not a discord.js client');
+   /* if (!(client instanceof this.discord.Client))
+      throw new TypeError('"client" is not a discord.js client'); */
 
     // API config
     this.baseApiUrl = "https://stats.danbot.xyz/api";
@@ -38,6 +38,8 @@ class DanBot {
     // General config
     this.v11 = this.discord.version <= "12.0.0";
     this.v12 = this.discord.version >= "12.0.0";
+    this.activeUsers = [];
+    this.commandsRun = 0;
 
     // Check for sharding
     if (this.client.shard) {
@@ -76,6 +78,8 @@ class DanBot {
       servers: guild_count.toString(), // Server count
       users: user_count.toString(), // User count
       clientInfo: this.client.user
+      //   active: this.activeUsers.length.toString(), // Users that have run commands since the last post
+      //  commands: this.commandsRun.toString(), // The how many commands have been run total
     };
 
     // Reset stats
@@ -142,6 +146,47 @@ class DanBot {
 
     // resolve with initial errors
     return Promise.resolve(post);
+  }
+
+  async botInfo() {
+    // Create post request
+    let response = await fetch(
+      this.baseApiUrl + `/bot/${this.client.user.id}/info`,
+      {
+        method: "get",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    // Server error
+    if (response.status >= 500)
+      return new Error(
+        `DanBot Hosting server error, statuscode: ${response.status}`
+      );
+
+    // Get body as JSON
+    let responseData = await response.json();
+
+    // Check response for errors
+    if (response.status == 200) {
+      // Success
+      return Promise.resolve(responseData);
+
+      if (!responseData.error) return Promise.resolve(false);
+    } else if (response.status == 400) {
+      // Bad request
+      if (responseData.error)
+        return Promise.resolve(new Error(responseData.message));
+    } else if (response.status == 429) {
+      // Rate limit hit
+      if (responseData.error)
+        return Promise.resolve(new Error(responseData.message));
+    } else {
+      // Other
+      return Promise.resolve(new Error("An unknown error has occurred"));
+    }
   }
 }
 // V12 sharding gets

@@ -38,6 +38,8 @@ class ShardingClient {
     // General config
     this.v11 = this.discord.version <= "12.0.0";
     this.v12 = this.discord.version >= "12.0.0";
+    this.activeUsers = [];
+    this.commandsRun = 0;
 
     // Check if all shards have been spawned
     this.manager.on("shardCreate", shard => {
@@ -109,7 +111,14 @@ class ShardingClient {
       servers: guild_count.toString(), // Server count
       users: user_count.toString(), // User count
       clientInfo: info
+      //    active: this.activeUsers.length.toString(), // Users that have run commands since the last post
+      //   commands: this.commandsRun.toString(), // The how many commands have been run total
     };
+
+    // Reset stats
+    this.activeUsers = [];
+    this.commandsRun = 0;
+    this.popularCommands = [];
 
     // Create post request
     let response = await fetch(this.baseApiUrl + `/bot/${id}/stats`, {

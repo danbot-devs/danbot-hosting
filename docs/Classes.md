@@ -49,7 +49,11 @@ Returns:  [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
  
  
 ## commandsRun
+<<<<<<< HEAD
 **`.commandsRun`**
+=======
+**`.activeUsers`**
+>>>>>>> 752db12fbf1faec9027c13a2b6db0a965ccfe999
 
 *No info found.*
 

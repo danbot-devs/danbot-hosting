@@ -1,3 +1,5 @@
+'use strict';
+
 const fetch = require("node-fetch");
 
 /**
@@ -27,33 +29,33 @@ class DanBot {
       );
     // Client error handling
     if (!client) throw new Error('"client" is missing or undefined');
-   /* if (!(client instanceof this.discord.Client))
-      throw new TypeError('"client" is not a discord.js client'); */
+    /* if (!(client instanceof this.discord.Client))
+       throw new TypeError('"client" is not a discord.js client'); */
 
     // API config
-    this.baseApiUrl = "https://stats.danbot.xyz/api";
+    this.baseApiUrl = "https://danbot.host/api";
     this.key = key;
     this.client = client;
 
     // General config
-    this.v11 = this.discord.version <= "12.0.0";
-    this.v12 = this.discord.version >= "12.0.0";
+    this.DJS12 = (this.discord.version.split('.')[0] === '12' ? 'v12' : 'v11') === 'v12';
     this.activeUsers = [];
     this.commandsRun = 0;
 
     // Check for sharding
     if (this.client.shard) {
-      this.sharding = true;
+      /** @private */
+      this._sharding = true;
 
       throw new Error(
         "Please use the sharding client if you wish to use shards"
       );
-    } else this.sharding = false;
+    } else this._sharding = false;
   }
 
   async post() {
     // Non-Sharding client
-    if (this.sharding)
+    if (this._sharding)
       return new Error(
         "Please use the statcord sharding client if you wish to use shards"
       );
@@ -62,15 +64,10 @@ class DanBot {
     let guild_count = 0;
     let user_count = 0;
 
-    // V12 code
-    if (this.v12) {
-      guild_count = this.client.guilds.cache.size;
-      user_count = this.client.users.cache.size;
-    } else if (this.v11) {
-      // V11 code
-      guild_count = this.client.guilds.size;
-      user_count = this.client.users.size;
-    }
+    // code
+    guild_count = this.DJS12 ? this.client.guilds.cache.size : this.client.guilds.size;
+    user_count  = this.DJS12 ? this.client.users.cache.size : this.client.users.size;
+
     // Post data
     let requestBody = {
       id: this.client.user.id, // Client id
@@ -131,7 +128,7 @@ class DanBot {
    */
   async autopost() {
     // Non-Sharding client
-    if (this.sharding)
+    if (this._sharding)
       throw new Error(
         "Please use the sharding client if you wish to use shards"
       );
@@ -173,8 +170,6 @@ class DanBot {
     if (response.status == 200) {
       // Success
       return Promise.resolve(responseData);
-
-      if (!responseData.error) return Promise.resolve(false);
     } else if (response.status == 400) {
       // Bad request
       if (responseData.error)
@@ -191,33 +186,25 @@ class DanBot {
 }
 // V12 sharding gets
 async function getGuildCountV12(client) {
-  return (await client.shard.fetchClientValues("guilds.cache.size")).reduce(
-    (prev, current) => prev + current,
-    0
-  );
+  return (await client.shard.fetchClientValues("guilds.cache.size"))
+    .reduce((prev, current) => prev + current, 0);
 }
 
 async function getUserCountV12(client) {
-  return (await client.shard.fetchClientValues("users.cache.size")).reduce(
-    (prev, current) => prev + current,
-    0
-  );
+  return (await client.shard.fetchClientValues("users.cache.size"))
+    .reduce((prev, current) => prev + current, 0);
 }
 // end
 
 // v11 sharding gets
 async function getGuildCountV11(client) {
-  return (await client.shard.fetchClientValues("guilds.size")).reduce(
-    (prev, current) => prev + current,
-    0
-  );
+  return (await client.shard.fetchClientValues("guilds.size"))
+    .reduce((prev, current) => prev + current, 0);
 }
 
 async function getUserCountV11(client) {
-  return (await client.shard.fetchClientValues("users.size")).reduce(
-    (prev, current) => prev + current,
-    0
-  );
+  return (await client.shard.fetchClientValues("users.size"))
+    .reduce((prev, current) => prev + current, 0);
 }
 //end
 

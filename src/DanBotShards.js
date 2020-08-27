@@ -1,3 +1,5 @@
+'use strict';
+
 const fetch = require("node-fetch");
 
 /**
@@ -69,8 +71,8 @@ class ShardingClient {
         if (!message.startsWith("ssc")) return;
         let args = message.split("|=-ssc-=|"); // get the args
 
-        if (args[0] == "sscpc") {
-        } else if (args[0] == "sscp") {
+        if (args[0] == "sscpc") return;
+        else if (args[0] == "sscp") {
           // Post message
           let post = await this.post();
           if (post) console.error(new Error(post));
@@ -159,10 +161,8 @@ class ShardingClient {
 
 // V12 sharding gets
 async function getGuildCountV12(manager) {
-  return (await manager.fetchClientValues("guilds.cache.size")).reduce(
-    (prev, current) => prev + current,
-    0
-  );
+  return (await manager.fetchClientValues("guilds.cache.size"))
+    .reduce((prev, current) => prev + current, 0);
 }
 
 async function getUserCountV12(manager) {
@@ -175,17 +175,13 @@ async function getUserCountV12(manager) {
 
 // v11 sharding gets
 async function getGuildCountV11(manager) {
-  return (await manager.fetchClientValues("guilds.size")).reduce(
-    (prev, current) => prev + current,
-    0
-  );
+  return (await manager.fetchClientValues("guilds.size"))
+    .reduce((prev, current) => prev + current, 0);
 }
 
 async function getUserCountV11(manager) {
-  return (await manager.fetchClientValues("users.size")).reduce(
-    (prev, current) => prev + current,
-    0
-  );
+  return (await manager.fetchClientValues("users.size"))
+    .reduce((prev, current) => prev + current, 0);
 }
 //end
 

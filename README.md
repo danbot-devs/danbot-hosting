@@ -16,9 +16,6 @@ Ignore any warnings about unmet peer dependencies, as they're all optional.
 
 npm: `npm i danbot-hosting`
 
-yarn: `yarn add danbot-hosting`
-
-
 # Examples
 
 **Most Needs async:**
@@ -66,7 +63,8 @@ const API = new DanBotHosting.ShardingClient("danbot-KEY", manager);
 
 ## Contributors
 
- TheTeaCup - [GitHub](https://github.com/TheTeaCup)
- Wilbert-mad - [GitHub](https://github.com/Wilbert-mad)
+TheTeaCup - [GitHub](https://github.com/TheTeaCup)
+
+Wilbert-mad - [GitHub](https://github.com/Wilbert-mad)
 
  

@@ -33,7 +33,7 @@ new  DanBotHosting.Client(key, client);
 ```diff
 - This should be kept private at all times.
 ```
- **`.key`**
+ **`.key`** *private*
 
 Authorization key to create the instance.
 
@@ -69,21 +69,21 @@ Returns:  [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 Will post your bots status.
 
-Returns:  [Promise]([https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise))<[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean) | [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)>
+Returns:  [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean) | [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)>
 
 ## autopost
 **`.autopost()`**
 
 Will post your bots status every hours automatically.
 
-Returns:  [Promise]([https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise))<[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean) | [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)>
+Returns:  [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)<[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean) | [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)>
 
 
 ## botInfo
 **`.botInfo()`**
 
 client's user info.
-Returns:  [Promise]([https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise))<any | [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)>
+Returns:  [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)<any | [Error](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error)>
 
 ## ShardingClient
 
@@ -94,7 +94,7 @@ new  DanBotHosting.ShardingClient(key, manager);
 | Parameter | Type | Opitonal | Description |
 |---|---|---|---|
 | key | [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)| | posts your app/bot status|
-| manager | [Discord.ShardingManager]([https://discord.js.org/#/docs/main/stable/class/ShardingManager](https://discord.js.org/#/docs/main/stable/class/ShardingManager)) | | discord ShardingManager (your discord Manager instance)|
+| manager | [Discord.ShardingManager](https://discord.js.org/#/docs/main/stable/class/ShardingManager) | | discord ShardingManager (your discord Manager instance)|
 
 ---
 

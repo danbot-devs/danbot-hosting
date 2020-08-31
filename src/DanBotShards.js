@@ -1,59 +1,54 @@
 'use strict';
 
-const fetch = require("node-fetch");
+const fetch = require('node-fetch');
+const { EventEmitter } = require('events');
+const discord = require('discord.js');
 
 /**
  * @class ShardingClient
  */
-class ShardingClient {
+class ShardingClient extends EventEmitter {
   /**
-   * no shards
+   * shards
    * @param {string} key - your api key prefix by "danbot-""
    * @param {*} client - your discord.js client object
    */
   constructor(key, manager) {
-    // Check for discord.js
-    try {
-      this.discord = require("discord.js");
-    } catch (e) {
-      throw new Error("discord.js is required");
-    }
-
+    super();
+    
     // Key error handling
     if (!key) throw new Error('"key" is missing or undefined');
     if (typeof key !== "string")
       throw new TypeError('"key" is not typeof string');
     if (!key.startsWith("danbot-"))
-      throw new Error(
-        '"key" is not prefixed by "danbot-", please follow the key format'
-      );
+      throw new Error('"key" is not prefixed by "danbot-", please follow the key format');
     // Manager error handling
     if (!manager) throw new Error('"manager" is missing or undefined');
-    if (!(manager instanceof this.discord.ShardingManager))
+    if (!(manager instanceof discord.ShardingManager))
       throw new TypeError('"manager" is not a discord.js sharding manager');
 
     // API config
-    this.baseApiUrl = "https://stats.danbot.xyz/api";
+    this.baseApiUrl = 'https://danbot.host/api';
     this.key = key;
     this.manager = manager;
 
     // General config
-    this.v11 = this.discord.version <= "12.0.0";
-    this.v12 = this.discord.version >= "12.0.0";
+    this.DJS12 = (discord.version.split('.')[0] === '12' ? 'v12' : 'v11') === 'v12';
     this.activeUsers = [];
     this.commandsRun = 0;
 
     // Check if all shards have been spawned
     this.manager.on("shardCreate", shard => {
       // Get current shard
-      let currShard = this.manager.shards.get(shard.id);
+      const currShard = this.manager.shards.get(shard.id);
 
       // If this is the last shard, wait until it is ready
       if (shard.id + 1 == this.manager.totalShards) {
         // When ready start auto post
         currShard.once("ready", () => {
           setTimeout(() => {
-            console.log("Starting autopost");
+            const time = new Date();
+            this.emit('autoPost', time);
 
             setInterval(async () => {
               await this.post();
@@ -69,12 +64,12 @@ class ShardingClient {
 
         // Check if they are statcord messages
         if (!message.startsWith("ssc")) return;
-        let args = message.split("|=-ssc-=|"); // get the args
+        const args = message.split("|=-ssc-=|"); // get the args
 
         if (args[0] == "sscpc") return;
         else if (args[0] == "sscp") {
           // Post message
-          let post = await this.post();
+          const post = await this.post();
           if (post) console.error(new Error(post));
         }
       });
@@ -84,21 +79,26 @@ class ShardingClient {
   /**
    * Manual posting
    * @private
-   * @returns {Promise<boolean | Error>} returns false if there was no error, returns an error if there was.
+   * @returns {Promise<Object>} returns false if there was no error, returns an error if there was.
    */
   async post() {
     // counts
     let guild_count = 0;
     let user_count = 0;
 
-    // V12 code
-    if (this.v12) {
-      guild_count = await getGuildCountV12(this.manager);
-      user_count = await getUserCountV12(this.manager);
-    } else if (this.v11) {
-      // V11 code
-      guild_count = await getGuildCountV11(this.manager);
-      user_count = await getUserCountV11(this.manager);
+    // catch an error like invaled discord version
+    try {
+      // V12 code 
+      if (DJS12) {
+        guild_count = await getGuildCountV12(this.manager);
+        user_count = await getUserCountV12(this.manager);
+      } else {
+        // V11 code
+        guild_count = await getGuildCountV11(this.manager);
+        user_count = await getUserCountV11(this.manager);
+      }
+    } catch (err) {
+      throw new Error('discord.js version must be v12 or v11.');
     }
 
     // Get client id
@@ -123,39 +123,47 @@ class ShardingClient {
     this.popularCommands = [];
 
     // Create post request
-    let response = await fetch(this.baseApiUrl + `/bot/${id}/stats`, {
+    const response = await fetch(`${this.baseApiUrl}/bot/${id}/stats`, {
       method: "post",
       body: JSON.stringify(requestBody),
-      headers: {
-        "Content-Type": "application/json"
-      }
+      headers: { "Content-Type": "application/json" }
     });
 
-    // Statcord server side errors
-    if (response.status >= 500)
-      return new Error(
-        `DanBotHosting - server error, statuscode: ${response.status}`
-      );
+    const req = new Promise(async(resolve, reject) => {
+      try {
+        // Statcord server side errors
+        if (response.status >= 500)
+          throw new Error(`DanBotHosting - server error, statuscode: ${response.status}`);
+    
+        // Get body as JSON
+         const responseData = await response.json();
+    
+        // Check response for errors
+        if (response.status == 200) {
+          // Success
+          const time = new Date();
+          this.emit('post', (time));
+          if (!responseData.error) {
+            resolve();
+          }
+        } else if (response.status == 400) {
+          // Bad request
+          if (responseData.error)
+            throw new Error(responseData.message)
+        } else if (response.status == 429) {
+          // Rate limit hit
+          if (responseData.error)
+            throw new Error(responseData.message)
+        } else {
+          // Other
+            throw new Error('An unknown error has occurred')
+        }
+      } catch (err) {
+        reject(err);
+      }
 
-    // Get body as JSON
-    let responseData = await response.json();
-
-    // Check response for errors
-    if (response.status == 200) {
-      // Success
-      if (!responseData.error) return Promise.resolve(false);
-    } else if (response.status == 400) {
-      // Bad request
-      if (responseData.error)
-        return Promise.resolve(new Error(responseData.message));
-    } else if (response.status == 429) {
-      // Rate limit hit
-      if (responseData.error)
-        return Promise.resolve(new Error(responseData.message));
-    } else {
-      // Other
-      return Promise.resolve(new Error("An unknown error has occurred"));
-    }
+    });
+    return req;
   }
 }
 

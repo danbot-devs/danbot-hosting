@@ -11,9 +11,9 @@ declare module 'danbot-hosting' {
     public client: Client;
     public activeUsers: User[];
     public commandsRun: number;
-    public post(): Promise<boolean | Error>
-    public autopost(): Promise<boolean | Error>
-    public botInfo(): Promise<Botinfo>
+    async public post(): Promise<void>
+    async public autopost(): Promise<void>
+    async public botInfo(): Promise<Botinfo>
 
     on(event: string, listener: Function): this;
     on(event: 'autoPost', listener: (time: Date) => void): this;
@@ -29,7 +29,7 @@ declare module 'danbot-hosting' {
     public manager: ShardingManager;
     public activeUsers: User[];
     public commandsRun: number;
-    public post(): Promise<Botinfo>
+    async public post(): Promise<void>
 
     on(event: string, listener: Function): this;
     on(event: 'autoPost', listener: (time: Date) => void): this;

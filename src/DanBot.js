@@ -24,8 +24,8 @@ class DanBot extends EventEmitter {
       throw new Error('"key" is not prefixed by "danbot-", please follow the key format');
     // Client error handling
     if (!client) throw new Error('"client" is missing or undefined');
-    /* if (!(client instanceof this.discord.Client))
-       throw new TypeError('"client" is not a discord.js client'); */
+    if (!(client instanceof discord.Client || client instanceof Object)) 
+      throw new TypeError('"client" must be of type discord client or Object');
 
     // API config
     this.baseApiUrl = 'https://danbot.host/api';

@@ -31,7 +31,7 @@ class DanBot {
       throw new TypeError('"client" is not a discord.js client'); */
 
     // API config
-    this.baseApiUrl = "https://stats.danbot.xyz/api";
+    this.baseApiUrl = "https://danbot.host/api";
     this.key = key;
     this.client = client;
 

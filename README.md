@@ -1,7 +1,7 @@
 # DanBotHosting API Wrapper
 
 - Discord: https://discord.gg/rYzHH5N
-- Site: https://stats.danbot.xyz
+- Site: https://danbot.host
 
 # How to get API Key
 

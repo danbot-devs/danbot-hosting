@@ -31,7 +31,7 @@ class ShardingClient {
       throw new TypeError('"manager" is not a discord.js sharding manager');
 
     // API config
-    this.baseApiUrl = "https://stats.danbot.xyz/api";
+    this.baseApiUrl = "https://danbot.host/api";
     this.key = key;
     this.manager = manager;
 

@@ -1,13 +1,13 @@
 # DanBotHosting API Wrapper
 
-- Discord: https://discord.gg/rYzHH5N
+- Discord: https://discord.gg/DBH
 - Site: https://danbot.host
 
 # How to get API Key
 
-- join our Discord (link above)
-- go into our #bot-commands channel
-- type `DBH!ApiKey` and you'll get an API Key!
+- Join our Discord server (link above).
+- Go into our `#bot-commands` channel.
+- Type `DBH!ApiKey` and the bot will send your API Key in your DM's.
 
 # Examples
 
@@ -18,13 +18,13 @@ _no-sharding_
 
 ```javascript
 const Discord = require("discord.js");
-let client = new Discord.Client();
+const client = new Discord.Client();
 
-var DanBotHosting = require("danbot-hosting");
+const DanBotHosting = require("danbot-hosting");
 
-client.on("ready", async () => {
-  console.log("bot is now ready");
-  const API = new DanBotHosting.Client("danbot-KEY", client);
+client.once("ready", async () => {
+  console.log(`Logged in as ${client.user.tag}`);
+  const API = new DanBotHosting.Client("danbot-API-KEY", client);
 
   // Start posting
   let initalPost = await API.autopost();
@@ -38,12 +38,14 @@ client.on("ready", async () => {
 **sharding**
 
 ```javascript
-const Discord = require("discord.js");
-let client = new Discord.Client();
+const { ShardingManager } = require("discord.js");
 
-var DanBotHosting = require("danbot-hosting");
-const manager = new Discord.ShardingManager("./bot.js", { token: "TOKEN" });
-const API = new DanBotHosting.ShardingClient("danbot-KEY", manager);
+const DanBotHosting = require("danbot-hosting");
+const manager = new ShardingManager("./bot.js", { token: "your-bot-token-here" });
+const API = new DanBotHosting.ShardingClient("danbot-API-KEY", manager);
+
+manager.spawn();
+manager.on('shardCreate', shard => console.log(`Shard #${shard.id} is online`));
 ```
 
 **get bot info**

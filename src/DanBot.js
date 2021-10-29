@@ -36,8 +36,9 @@ class DanBot {
     this.client = client;
 
     // General config
-    this.v11 = this.discord.version <= "12.0.0";
-    this.v12 = this.discord.version >= "12.0.0";
+    this.v11 = this.discord.version <= "13.0.0";
+    this.v12 = this.discord.version <= "13.0.0";
+    this.v13 = this.discord.version >= "13.0.0";
     this.activeUsers = [];
     this.commandsRun = 0;
 
@@ -62,8 +63,11 @@ class DanBot {
     let guild_count = 0;
     let user_count = 0;
 
-    // V12 code
-    if (this.v12) {
+    // v13 code
+    if (this.v13) {
+      guild_count = this.client.guilds.cache.size;
+      user_count = this.client.users.cache.size;
+    } else (this.v12) {
       guild_count = this.client.guilds.cache.size;
       user_count = this.client.users.cache.size;
     } else if (this.v11) {
@@ -189,6 +193,23 @@ class DanBot {
     }
   }
 }
+
+// V13 sharding gets
+async function getGuildCountV13(client) {
+  return (await client.shard.fetchClientValues("guilds.cache.size")).reduce(
+    (prev, current) => prev + current,
+    0
+  );
+}
+
+async function getUserCountV13(client) {
+  return (await client.shard.fetchClientValues("users.cache.size")).reduce(
+    (prev, current) => prev + current,
+    0
+  );
+}
+// end
+
 // V12 sharding gets
 async function getGuildCountV12(client) {
   return (await client.shard.fetchClientValues("guilds.cache.size")).reduce(

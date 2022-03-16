@@ -106,9 +106,9 @@ class ShardingClient {
     }
 
     // Get client id
-    let id = (await this.manager.broadcastEval("this.user.id"))[0];
+    let id = (await this.manager.broadcastEval(c => c.user.id))[0];
     // Get client info
-    let info = (await this.manager.broadcastEval("this.user"))[0];
+    let info = (await this.manager.broadcastEval(c => c.user))[0];
 
     // Post data
     let requestBody = {

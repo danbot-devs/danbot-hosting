@@ -36,8 +36,9 @@ class ShardingClient {
     this.manager = manager;
 
     // General config
-    this.v11 = this.discord.version <= "12.0.0";
-    this.v12 = this.discord.version >= "12.0.0";
+    this.v11 = this.discord.version <= "13.0.0";
+    this.v12 = this.discord.version <= "13.0.0";
+    this.v13 = this.discord.version >= "13.0.0";
     this.activeUsers = [];
     this.commandsRun = 0;
 
@@ -89,8 +90,13 @@ class ShardingClient {
     let guild_count = 0;
     let user_count = 0;
 
-    // V12 code
-    if (this.v12) {
+    
+    if (this.v13) {
+      // V13 code
+      guild_count = await getGuildCountV13(this.manager);
+      user_count = await getUserCountV13(this.manager);
+    } else if (this.v12) {
+      // V12 code
       guild_count = await getGuildCountV12(this.manager);
       user_count = await getUserCountV12(this.manager);
     } else if (this.v11) {
@@ -100,9 +106,9 @@ class ShardingClient {
     }
 
     // Get client id
-    let id = (await this.manager.broadcastEval("this.user.id"))[0];
+    let id = (await this.manager.broadcastEval(c => c.user.id))[0];
     // Get client info
-    let info = (await this.manager.broadcastEval("this.user"))[0];
+    let info = (await this.manager.broadcastEval(c => c.user))[0];
 
     // Post data
     let requestBody = {
@@ -156,6 +162,20 @@ class ShardingClient {
     }
   }
 }
+
+// V12 sharding gets
+async function getGuildCountV13(manager) {
+  return (await manager.fetchClientValues("guilds.cache.size")).reduce(
+    (prev, current) => prev + current,
+    0
+  );
+}
+
+async function getUserCountV13(manager) {
+  const memberNum = await manager.broadcastEval(c => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0));
+  return memberNum.reduce((prev, memberCount) => prev + memberCount, 0);
+}
+// end
 
 // V12 sharding gets
 async function getGuildCountV12(manager) {

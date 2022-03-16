@@ -90,8 +90,13 @@ class ShardingClient {
     let guild_count = 0;
     let user_count = 0;
 
-    // V12 code
-    if (this.v12) {
+    
+    if (this.v13) {
+      // V13 code
+      guild_count = await getGuildCountV13(this.manager);
+      user_count = await getUserCountV13(this.manager);
+    } else if (this.v12) {
+      // V12 code
       guild_count = await getGuildCountV12(this.manager);
       user_count = await getUserCountV12(this.manager);
     } else if (this.v11) {
